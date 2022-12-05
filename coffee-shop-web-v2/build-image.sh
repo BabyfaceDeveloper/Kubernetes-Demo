@@ -1,0 +1,1 @@
+docker build -t coffee-shop-web:v2 .
