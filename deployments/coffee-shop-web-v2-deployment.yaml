@@ -18,7 +18,6 @@ spec:
       containers:
       - name: coffee-shop-website
         image: your-company-name/coffee-shop-web:v2
-        imagePullPolicy: Never
         resources:
           limits:
             memory: "500Mi"
