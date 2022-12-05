@@ -11,7 +11,8 @@
     - [Dependencies](#dependencies)
     - [Installing Kubernetes](#installing-kubernetes)
     - [Installing Kubernetes Dashboard](#installing-kubernetes-dashboard)
-    - [Deploy a Deployment or Service](#deploy-a-deployment-or-service)
+    - [Commands](#commands)
+    - [Remove a node from cluster](#remove-a-node-from-cluster)
   - [Authors](#authors)
   - [Version History](#version-history)
   - [License](#license)
@@ -134,10 +135,112 @@ sudo kubeadm token create --print-join-command
 
 ### Installing Kubernetes Dashboard
 
-### Deploy a Deployment or Service
+> See https://github.com/kubernetes/dashboard 
+
+* Installation
 
 ```bash
-kubectl apply -f 'your file here'
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+```
+* Expose as NodePort
+
+Edit `kubernetes-dashboard` service.
+
+```shell
+kubectl -n kubernetes-dashboard edit service kubernetes-dashboard
+```
+
+You should see `yaml` representation of the service. Change `type: ClusterIP` to `type: NodePort` and save file. If it's already changed go to next step.
+
+```yaml
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: v1
+...
+  name: kubernetes-dashboard
+  namespace: kubernetes-dashboard
+  resourceVersion: "343478"
+  selfLink: /api/v1/namespaces/kubernetes-dashboard/services/kubernetes-dashboard
+  uid: 8e48f478-993d-11e7-87e0-901b0e532516
+spec:
+  clusterIP: 10.100.124.90
+  externalTrafficPolicy: Cluster
+  ports:
+  - port: 443
+    protocol: TCP
+    targetPort: 8443
+  selector:
+    k8s-app: kubernetes-dashboard
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
+```
+
+Next we need to check port on which Dashboard was exposed.
+
+```shell
+kubectl -n kubernetes-dashboard get service kubernetes-dashboard
+```
+
+The output is similar to this:
+
+```
+NAME                   TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+kubernetes-dashboard   NodePort   10.100.124.90   <nodes>       443:31707/TCP   21h
+```
+
+Dashboard has been exposed on port `31707 (HTTPS)`. Now you can access it from your browser at: `https://<master-ip>:31707`. `master-ip` can be found by executing `kubectl cluster-info`. Usually it is either `127.0.0.1` or IP of your machine, assuming that your cluster is running directly on the machine, on which these commands are executed.
+
+In case you are trying to expose Dashboard using `NodePort` on a multi-node cluster, then you have to find out IP of the node on which Dashboard is running to access it. Instead of accessing `https://<master-ip>:<nodePort>` you should access `https://<node-ip>:<nodePort>`.
+
+* Access control
+
+> See https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/README.md 
+
+### Commands
+
+* Apply Deployment or Service
+```bash
+kubectl apply -f 'your yaml file here'
+```
+* Query the list of Pods
+```bash
+kubectl get pods
+```
+* Query the list of Services
+```bash
+kubectl get service
+```
+* Scale up the number of Pods
+```bash
+kubectl scale deployment 'deployment name' --replicas='how many replicas for pods'
+```
+* Delete all Pods, Deployments, and Services
+```bash
+kubectl delete deployment 'deployment name'
+kubectl delete service 'service name'
+```
+
+### Remove a node from cluster
+
+1. View a node which will be removed
+```bash
+kubectl get nodes -o wide
+```
+2. Drain the node
+```bash
+kubectl drain <node name> --delete-local-data --force --ignore-daemonsets
+```
+3. Un-configure the kubernetes node
+```bash
+sudo kubeadm reset
+```
+4. Delete the node and validate (control plane)
+```bash
+kubectl delete node <node name>
 ```
 
 ## Authors
