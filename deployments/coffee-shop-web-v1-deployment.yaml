@@ -16,7 +16,7 @@ spec:
         tier: static-webpage
     spec:
       containers:
-      - name: coffee-shop-web:v1
+      - name: coffee-shop-website
         image: your-company-name/coffee-shop-web:v1
         imagePullPolicy: Never
         resources:
