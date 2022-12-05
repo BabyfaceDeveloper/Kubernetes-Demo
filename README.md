@@ -226,15 +226,15 @@ kubectl delete service 'service name'
 
 ### Remove a node from cluster
 
-1. View a node which will be removed
+1. View a node which will be removed (control plane)
 ```bash
 kubectl get nodes -o wide
 ```
-2. Drain the node
+2. Drain the node (control plane)
 ```bash
 kubectl drain <node name> --delete-local-data --force --ignore-daemonsets
 ```
-3. Un-configure the kubernetes node
+3. Un-configure the kubernetes node (node will be removed)
 ```bash
 sudo kubeadm reset
 ```
