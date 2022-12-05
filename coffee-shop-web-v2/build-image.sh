@@ -1,1 +1,1 @@
-docker build -t coffee-shop-web:v2 .
+docker build -t your-company-name/coffee-shop-web:v2 .
