@@ -56,7 +56,7 @@ sudo reboot now
 ```bash
 sudo swapoff -a && sudo sed 's;^.*swap;#&;g' -i /etc/fstab
 ```
-4. **Install containerd (Docker runtime)**
+4. **Install containerd (Docker runtime) and cli**
 ```bash
 sudo apt update && sudo apt -y install \
 ca-certificates \
@@ -74,7 +74,7 @@ echo \
 $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 ```
 ```bash
-sudo apt-get update && sudo apt-get install containerd.io -y
+sudo apt-get update && sudo apt-get install docker-ce docker-ce-cli containerd.io -y
 ```
 ```bash
 # Exports config files used by kubelet and systemd cgroup
