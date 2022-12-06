@@ -223,6 +223,10 @@ kubectl scale deployment 'deployment name' --replicas='how many replicas for pod
 kubectl delete deployment 'deployment name'
 kubectl delete service 'service name'
 ```
+* Update application
+```bash
+kubectl set image deployment/'deployment name' 'container name'='application image with new version'
+```
 
 ### Remove a node from cluster
 
