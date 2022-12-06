@@ -1,4 +1,4 @@
-# Kubernetes demonstration (Installation, Deployment, Updating)
+# Kubernetes demonstration (Installation, Deployment and Updating)
 
 > Algonquin College final demo for Emerging Technologies project
 
